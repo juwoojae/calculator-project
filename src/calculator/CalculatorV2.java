@@ -73,7 +73,7 @@ public class CalculatorV2 {
             if (num1 instanceof Integer && num2 instanceof Integer)
                 // Integer (op) Integer = Double 이 되는 케이스가 있음 mod 연산을 이용해서 형변환을 할지말지 결정
                 if(num1.doubleValue() % num2.doubleValue()>0){ //num1%num2>0 이라면 나누어 떨어지지 않으므로 Doble 형 그대로 리턴
-                    return result;
+                    return  fommating(result);
                 }else { //나누어 떨어지는 경우에는 int 로 형변환
                     return (int) result;
                 }

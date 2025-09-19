@@ -39,7 +39,7 @@ public class App {
             System.out.printf("첫 번째 숫자를 입력 하세요: ");
             while (true) {   //숫자가 아닌값을 입력 받았을때의 예외처리
                 try {
-                    num1 = Integer.parseInt(bufferedReader.readLine());
+                    num1 = inputNumber();
                     break; //숫자를 제대로 입력 받았다면
                 } catch (NumberFormatException e) {
                     System.out.printf("숫자를 입력해주세요 : ");
@@ -64,7 +64,7 @@ public class App {
                 System.out.printf("두 번째 숫자를 입력 하세요: ");
                 while (true) {
                     try {
-                        num2 = Integer.parseInt(bufferedReader.readLine());
+                        num2 = inputNumber();
                         if (operator.equals("/")) {
                             validateDivisionNum(num2);
                         }
@@ -78,7 +78,7 @@ public class App {
                 }
                 result = calculator.calculate(num1, num2, operator);
                 calculator.save(result);// Calculator 컬렉션 에 결과 저장
-                System.out.printf("결과: %s %s %s= %s\n",String.valueOf(num1), operator, String.valueOf(num2), String.valueOf(result));
+                System.out.printf("결과: %s %s %s = %s\n",String.valueOf(num1), operator, String.valueOf(num2), String.valueOf(result));
             }
             //Step 2: 연산 로직 구현
             while (true) {
@@ -109,7 +109,7 @@ public class App {
                         System.out.printf("숫자를 입력 하세요: ");
                         while (true) {
                             try {
-                                num2 = Integer.parseInt(bufferedReader.readLine());
+                                num2 = inputNumber();
                                 if (operator.equals("/")) {
                                     validateDivisionNum(num2);
                                 }
@@ -123,7 +123,7 @@ public class App {
                         }
                         result = calculator.calculate(num1, num2, operator);
                         calculator.save(result);// Calculator 컬렉션 에 결과 저장
-                        System.out.printf("결과: %s %s %s= %s\n",String.valueOf(num1), operator, String.valueOf(num2), String.valueOf(result));
+                        System.out.printf("결과: %s %s %s = %s\n",String.valueOf(num1), operator, String.valueOf(num2), String.valueOf(result));
                     }
                 }
             }
@@ -167,9 +167,21 @@ public class App {
             throw new InvalidateDivisionException("잘못된 입력입니다: " + divsionNum);
         }
     }
-    public static void main(String[] args) throws IOException {
-        while (true) {
-            menu();
+
+    /**
+     * 입력 함수.
+     * Double 형과 Integer 형을 둘다 입력받은후
+     * @return Number 형으로 리턴
+     * @throws IOException
+     */
+    public static Number inputNumber() throws IOException {
+        String input= bufferedReader.readLine();
+        if (input.contains(".") || input.contains("e") || input.contains("E")) {
+            // 소수점이 있으면 Double
+             return Double.valueOf(input);
+        } else {
+            // 정수면 Integer
+            return Integer.valueOf(input);
         }
     }
 }
