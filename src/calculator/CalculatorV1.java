@@ -1,8 +1,11 @@
 package calculator;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
-public class Calculator {
+import java.util.stream.Collectors;
+
+public class CalculatorV1 {
     /**
      * 컬렉션 필드에 직접 접근하지 못하도록 수정 (캡슐화)
      */
@@ -50,5 +53,6 @@ public class Calculator {
     public Queue<Double> getResultQueueInstance() {
         return new LinkedList<>(resultQueue);  //얕은 복사
     }
+
 }
 

@@ -1,37 +1,23 @@
+import calculator.CalculatorV1;
+import calculator.CalculatorV2;
+import exception.InvalidateDivisionException;
+import exception.InvalidateOperatorException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.stream.Collectors;
 
-public class Calculator {
+public class App {
 
-    static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+    static BufferedReader bufferedReader;
+    static CalculatorV2 calculator;
 
-    //연산 결과를 저장하는 리스트
-    static List<Double> resultList = new ArrayList<>();
-
-    //두수와 연산자를 받아서 연산후 리턴하는 메서드
-    //함수 오버로딩
-    //sqrt 연산인 경우 , num1 까지만 필요하다
-    static double calculater(double num1_, String ch) {
-        return Math.sqrt(num1_);
-    }
-
-    static double calculater(double num1_, double num2_, String ch) {
-        if (ch.equals("+")) {
-            return num1_ + num2_;
-        } else if (ch.equals("-")) {
-            return num1_ - num2_;
-        } else if (ch.equals("*")) {
-            return num1_ * num2_;
-        } else if (ch.equals("/")) {
-            return num1_ / num2_;
-        } else if (ch.equals("%")) {
-            return num1_ % num2_;
-        } else {
-            return Math.sqrt(num1_);
-        }
+    static {
+        bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        calculator = new CalculatorV2();
     }
 
     static void menu() throws IOException {
@@ -43,10 +29,12 @@ public class Calculator {
         System.out.printf("선택: ");
         int cmd = Integer.parseInt(bufferedReader.readLine());//명령어 를 저장하는 변수
         if (cmd == 1) {  //1.계산하기
-            double num1;//첫 번째 숫자.
-            double num2;//두 번째 숫자.
+
+            Number num1;//첫 번째 숫자.
+            Number num2;//두 번째 숫자.
             String operator; //연산자 +, -, *, /,
-            double result;//결과
+            Number result;//결과
+
             System.out.println("=== Java 계산기 ===");
             System.out.printf("첫 번째 숫자를 입력 하세요: ");
             while (true) {   //숫자가 아닌값을 입력 받았을때의 예외처리
@@ -69,32 +57,32 @@ public class Calculator {
                 }
             }
             if (operator.equals("sqrt")) {   //sqrt 연산 : 매개변수가 1개만 필요한경우
-                result = calculater(num1, operator);
-                resultList.add(result);//자료구조에 결과 저장
-                System.out.printf("결과: %.1f %s = %.1f\n", num1, operator, result);
-            } else {     //그 이외의 연산 : 매개변수가 2개 필요한 경우
+                result = calculator.calculate(num1, operator);
+                calculator.save(result);// Calculator 컬렉션 에 결과 저장
+                System.out.printf("결과: %s %s = %s\n", String.valueOf(num1), operator, String.valueOf(result));
+            } else {     //그 이외의 연산 : 매개변수가 2개 필요한 경우 +, -, *, /, %, ^,
                 System.out.printf("두 번째 숫자를 입력 하세요: ");
-                while (true) {   //1.숫자가 아닌값을 입력 받았을때의 예외처리
-                    try {        //2.나누기 연산인 경우 입력값이 0일경우에 예외처리
+                while (true) {
+                    try {
                         num2 = Integer.parseInt(bufferedReader.readLine());
                         if (operator.equals("/")) {
                             validateDivisionNum(num2);
                         }
                         break;
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException e) {//1.숫자가 아닌값을 입력 받았을때의 예외처리
                         System.out.printf("숫자를 입력해주세요 : ");
-                    } catch (InvalidateDivisionException e) {
+                    } catch (InvalidateDivisionException e) {//2.나누기 연산인 경우 입력값이 0일경우에 예외처리
                         System.out.printf("0으로 나눌 수 없습니다\n");
                         System.out.printf("숫자를 입력해주세요 : ");
                     }
                 }
-                result = calculater(num1, num2, operator);
-                resultList.add(result);//자료구조에 결과 저장
-                System.out.printf("결과: %.1f %s %.1f = %.1f\n", num1, operator, num2, result);
+                result = calculator.calculate(num1, num2, operator);
+                calculator.save(result);// Calculator 컬렉션 에 결과 저장
+                System.out.printf("결과: %s %s %s= %s\n",String.valueOf(num1), operator, String.valueOf(num2), String.valueOf(result));
             }
             //Step 2: 연산 로직 구현
             while (true) {
-                System.out.printf("이전 결과(%.1f) 를 사용하시겠습니까? (y/n): ", result);
+                System.out.printf("이전 결과(%s) 를 사용하시겠습니까? (y/n): ", String.valueOf(result));
                 String sw = bufferedReader.readLine();
                 if (sw.equals("n")) {
                     System.out.println("계산기를 종료합니다.");
@@ -114,45 +102,71 @@ public class Calculator {
                         }
                     }
                     if (operator.equals("sqrt")) {   //sqrt 연산 : 매개변수가 1개만 필요한경우
-                        result = calculater(num1, operator);
-                        resultList.add(result);//자료구조에 결과 저장
-                        System.out.printf("결과: %.1f %s = %.1f\n", num1, operator, result);
-                    } else {     //그 이외의 연산 : 매개변수가 2개 필요한 경우
+                        result = calculator.calculate(num1, operator);
+                        calculator.save(result);// Calculator 컬렉션 에 결과 저장
+                        System.out.printf("결과: %s %s = %s\n", String.valueOf(num1), operator, String.valueOf(result));
+                    } else {    //그 이외의 연산 : 매개변수가 2개 필요한 경우 +, -, *, /, %, ^,
                         System.out.printf("숫자를 입력 하세요: ");
-                        while (true) {   //숫자가 아닌값을 입력 받았을때의 예외처리
+                        while (true) {
                             try {
                                 num2 = Integer.parseInt(bufferedReader.readLine());
                                 if (operator.equals("/")) {
                                     validateDivisionNum(num2);
                                 }
                                 break;
-                            } catch (NumberFormatException e) {
+                            } catch (NumberFormatException e) { //숫자가 아닌값을 입력 받았을때의 예외처리
                                 System.out.printf("숫자를 입력해주세요 : ");
-                            } catch (InvalidateDivisionException e) {
+                            } catch (InvalidateDivisionException e) { //2.나누기 연산인 경우 입력값이 0일경우에 예외처리
                                 System.out.printf("0으로 나눌 수 없습니다\n");
                                 System.out.printf("숫자를 입력해주세요 : ");
                             }
                         }
-                        result = calculater(num1, num2, operator);
-                        resultList.add(result);//자료구조에 결과 저장
-                        System.out.printf("결과: %.1f %s %.1f = %.1f\n", num1, operator, num2, result);
+                        result = calculator.calculate(num1, num2, operator);
+                        calculator.save(result);// Calculator 컬렉션 에 결과 저장
+                        System.out.printf("결과: %s %s %s= %s\n",String.valueOf(num1), operator, String.valueOf(num2), String.valueOf(result));
                     }
                 }
             }
         } else if (cmd == 2) {  //2. 계산 이력 보기
             System.out.printf("=== <계산 이력> ===\n");
-            for (int i = 1; i < resultList.size() + 1; i++) {
-                System.out.printf("%d 번째 %.1f\n", i, resultList.get(i - 1));
+            Queue<Number> instance = calculator.getResultQueueInstance();
+            int count = 1;
+            for (Number v : instance) {
+                System.out.printf("%d 번째 계산 결과 =  %f", count++,v );
             }
         } else if (cmd == 3) {  //3. 이력 지우기
-            System.out.printf("숫자 입력: ");
-            resultList.remove(Integer.parseInt(bufferedReader.readLine()) - 1);
-        } else { //0. 종료
+            Number remove = calculator.remove();
+            System.out.println("sucessful!");
+        }else { //0. 종료
             System.out.println("=== 계산기를 종료합니다 ===");
             System.exit(1);
         }
     }
 
+    /**
+     * 연산자 검증 메서드
+     * @param operator : 연산자 문자열
+     * @throws InvalidateOperatorException operator 입력이 +, -, *, /, %%, ^, sqrt 가 아니라면 연산자가 아니므로 예외를 던짐
+     */
+    public static void validateOperator(String operator) throws InvalidateOperatorException {
+        if (!(operator.equals("+") || operator.equals("-") ||
+                operator.equals("*") || operator.equals("/") ||
+                operator.equals("%") || operator.equals("^") ||
+                operator.equals("sqrt"))
+        ) {
+            throw new InvalidateOperatorException("잘못된 연산자입니다: " + operator);
+        }
+    }
+    /**
+     * == ArithmeticException
+     * @param divsionNum 분모에 들어오는 숫자
+     * @throws InvalidateDivisionException 0이라면 예외를 던짐
+     */
+    public static void validateDivisionNum(Number divsionNum) throws InvalidateDivisionException {
+        if (divsionNum.intValue() == 0) {
+            throw new InvalidateDivisionException("잘못된 입력입니다: " + divsionNum);
+        }
+    }
     public static void main(String[] args) throws IOException {
         while (true) {
             menu();

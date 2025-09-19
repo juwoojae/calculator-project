@@ -1,7 +1,7 @@
 # Java 계산기 프로젝트
 
 **🎯 목표**
-* **하나의 클래스(Calculator)**에서 모든 기능 구현
+* **하나의 클래스(App)**에서 모든 기능 구현
 * 사용자 입력을 받아 **사칙연산** 수행
 * `Scanner`, `if/switch` 문법 활용
 * 콘솔 기반 입출력 처리
@@ -43,7 +43,7 @@
 ```java
 import java.util.Scanner;
 
-public class Calculator {
+public class App {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         

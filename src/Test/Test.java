@@ -1,10 +1,15 @@
-import calculator.Calculator;
+package Test;
+
+import calculator.CalculatorV1;
 
 import java.util.Queue;
 
-public class Main {
+/**
+ * Calculator 의 Test
+ */
+public class Test {
     public static void main(String[] args) {
-        Calculator calculator = new Calculator();
+        CalculatorV1 calculator = new CalculatorV1();
         double sqrt = calculator.calculate(4, "sqrt");
         calculator.save(sqrt);
         double plus = calculator.calculate(1, 9, "+");
@@ -17,8 +22,9 @@ public class Main {
         System.out.println(calculator.calculate(10,2,"/"));
         System.out.println(calculator.calculate(10,6,"%"));
         System.out.println(calculator.calculate(10,2,"^"));
-        calculator.remove();
+       // calculator.remove();
         resultQueueInstance = calculator.getResultQueueInstance();
         System.out.println("resultQueueInstance = " + resultQueueInstance);
+
     }
 }
